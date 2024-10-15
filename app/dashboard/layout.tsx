@@ -1,19 +1,20 @@
-"use client";
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/logo.png";
 import { ReactNode } from "react";
 import { DashboardLinks } from "../components/DashboardLinks";
-import { Icon, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"; // Ensure these are correctly imported.
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { auth } from "../lib/auth";
+import { auth, signOut } from "../lib/auth";
+import { requireUser } from "../lib/hooks";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
 
-    const session = await auth();
+    const session = await requireUser();
     return (
         <>
             <div className="min-h-screen w-full grid md:grid-cols-[200px_1fr] lg:grid-cols-[280px_1fr]">
@@ -36,6 +37,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                         </div>
                     </div>
                 </div>
+                
                 {/* resplosive Side Menu */}
                 <div className="flex flex-col">
                     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
@@ -65,12 +67,19 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild><Link href="/dashboard/settings">Settings</Link></DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <button className="w-full text-left">Logout</button>  </DropdownMenuItem>
+                                        {/* <form action={async () => {
+                                            "use server"
+                                            await signOut();
+                                        }} className="w-full">
+                                            <button className="w-full text-left">Logout</button>
+                                        </form> */}
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
                     </header>
-                </div >
+                    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">{children}</main>
+                </div>
             </div >
         </>
     );
